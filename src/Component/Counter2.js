@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from '../react-redux';
+import actions from '../store/actions/counter';
+import { pickActions } from '../store';
 
 function Counter2(props) {
     return (
@@ -10,13 +12,6 @@ function Counter2(props) {
     );
 }
 
-const mapDispatchToProps = {
-    minus() {
-        return {
-            type: 'MINUS',
-            payload: 1,
-        };
-    },
-};
+const mapDispatchToProps = pickActions(['minus'], actions);
 
 export default connect(undefined, mapDispatchToProps)(Counter2);

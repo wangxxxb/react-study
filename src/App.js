@@ -1,12 +1,12 @@
 import React from 'react';
-import Counter1 from './Componnet/Counter1';
-import Counter2 from './Componnet/Counter2';
-import Count from './Componnet/Count';
+import Counter1 from './Component/Counter1';
+import Counter2 from './Component/Counter2';
+import Count from './Component/Count';
 
 export default function App() {
     const counter1Ref = React.useRef(null);
     React.useEffect(() => {
-        console.log(counter1Ref);
+        console.log('获取被connect包裹的组件的ref', counter1Ref);
     }, []);
     return (
         <div>
