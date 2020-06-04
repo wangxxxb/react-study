@@ -1,19 +1,21 @@
 import React, { useEffect, useState, useContext, memo, forwardRef } from 'react';
 import bindActionCreators from '../redux/bindActionCreators';
 import ReactReduxContext from './Context';
-import shallowEqual from './utils/shallowEqual';
+import { shallowEqual, isObj } from './utils';
 
-// 这里只使用bindActionCreators来创建action函数，未考虑mapDispatchToProps为一个形参为dispatch的函数
 // 具体可以参考react-redux https://github.com/reduxjs/react-redux/blob/master/src/connect/mapDispatchToProps.js
+// 这里没有写的跟官方那样严禁
 function mapDispatchToPropsEnhancer(mapDispatchToProps, dispatch) {
-    return bindActionCreators(mapDispatchToProps, dispatch);
+    const fnProps = typeof mapDispatchToProps === 'function' ? mapDispatchToProps(dispatch) : bindActionCreators(mapDispatchToProps, dispatch);
+    if (!isObj(fnProps)) throw new Error('Expect Object');
+    return fnProps;
 }
 
 // 判断是否为函数,判断函数返回值是否为对象
 function mapStateToPropsEnhancer(mapStateToProps, getState) {
     if (typeof mapStateToProps === 'function') {
         const newState = mapStateToProps(getState());
-        if (Object.prototype.toString.call(newState) === '[object Object]') return newState;
+        if (isObj(newState)) return newState;
     }
     return {};
 }
