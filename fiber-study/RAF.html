@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+    </head>
+    <body>
+        <script>
+            const works = [
+                () => {
+                    console.log('start1');
+                    sleep(1000);
+                    console.log('end1');
+                },
+                () => {
+                    console.log('start2');
+                    console.log('end2');
+                },
+                () => {
+                    console.log('start3');
+                    console.log('end3');
+                },
+            ];
+
+            function sleep(delay) {
+                for (var startTime = new Date(); new Date() - startTime < delay; ) {}
+            }
+            // https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback
+            // 浏览器每一帧空余时间执行优先任务后剩余可支配时间会调用
+            requestIdleCallback(workLoop, { timeout: 1000 });
+
+            function workLoop(deadline) {
+                while ((deadline.timeRemaining() > 0 || deadline.didTimeout) && works.length > 0) {
+                    performUnitOfWork();
+                }
+                if (works.length > 0) {
+                    requestIdleCallback(workLoop, { time: 1000 });
+                }
+            }
+
+            function performUnitOfWork() {
+                works.shift()();
+            }
+        </script>
+    </body>
+</html>
